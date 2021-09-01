@@ -52,7 +52,7 @@ class inputValidation {
 
     static async meetingFixed(req, res, next) {
         // const scheduler = Service.getAllMeetingTime
-        Scheduler.find()
+        Scheduler.find().sort({$natural:-1})
         .then( (response) => {return customResponse(res, 200, "Here's the list of all meetings", response)} )
         .catch((error) => { next(error)})
     }
