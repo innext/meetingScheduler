@@ -1,7 +1,8 @@
 const Scheduler = require("../models/scheduler-model")
 const { customResponse } = require("../validationAndErrors/response")
 const {TWILIO_ACCOUNT_SID} = process.env; 
-const {TWILIO_AUTH_TOKEN} = process.env; 
+const {TWILIO_AUTH_TOKEN} = process.env;
+const { from, to } = process.env
 const client = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 class inputValidation {
@@ -16,15 +17,18 @@ class inputValidation {
         try {
             client.messages.create({ 
                 body:`NEW. T:${info.title}, D:${info.startTime} N:${info.note}`,
-                from: process.env.from,
-                to: process.env.to 
+                from: from,
+                to: to 
             })
             .then(message => console.log(message.sid)) 
             .done();
-            
-            return new Scheduler(
-                info
-            ).save()
+
+            return new Scheduler({
+                startTime: info.startTime,
+                endTime: info.endTime,
+                note: info.note,
+                title: info.title
+            }).save()
         } catch (error) {
             next(error)
         }
